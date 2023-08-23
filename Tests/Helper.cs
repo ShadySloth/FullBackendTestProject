@@ -6,25 +6,77 @@ namespace Tests;
 
 public static class Helper
 {
-    public static readonly Uri Uri = new Uri(Environment.GetEnvironmentVariable("pgconn")!);
+    public static readonly Uri Uri;
+    public static readonly string ProperlyFormattedConnectionString;
+    public static readonly NpgsqlDataSource DataSource;
 
-    public static readonly string
-        ProperlyFormattedConnectionString = string.Format(
-            "Server={0};Database={1};User Id={2};Password={3};Port={4};Pooling=true;MaxPoolSize=3",
-            Uri.Host,
-            Uri.AbsolutePath.Trim('/'),
-            Uri.UserInfo.Split(':')[0],
-            Uri.UserInfo.Split(':')[1],
-            Uri.Port > 0 ? Uri.Port : 5432);
+    static Helper()
+    {
+        string rawConnectionString;
+        string envVarKeyName = "pgconn";
 
-    public static readonly NpgsqlDataSource DataSource =
-        new NpgsqlDataSourceBuilder(ProperlyFormattedConnectionString).Build();
+        rawConnectionString = Environment.GetEnvironmentVariable(envVarKeyName)!;
+        if (rawConnectionString == null)
+        {
+            throw new Exception($@"
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨
+YOUR CONN STRING PGCONN IS EMPTY.
+Solution: Go to Settings, search for Test Runner, and add the environment variable in there.
+Currently, your program looks for an environment variable is called {envVarKeyName}.
+
+Best regards, Alex
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨
+");
+        }
+
+        try
+        {
+            Uri = new Uri(rawConnectionString);
+            ProperlyFormattedConnectionString = string.Format(
+                "Server={0};Database={1};User Id={2};Password={3};Port={4};Pooling=true;MaxPoolSize=3",
+                Uri.Host,
+                Uri.AbsolutePath.Trim('/'),
+                Uri.UserInfo.Split(':')[0],
+                Uri.UserInfo.Split(':')[1],
+                Uri.Port > 0 ? Uri.Port : 5432);
+            DataSource =
+                new NpgsqlDataSourceBuilder(ProperlyFormattedConnectionString).Build();
+            DataSource.OpenConnection().Close();
+        }
+        catch (Exception e)
+        {
+            throw new Exception($@"
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨
+Your connection string is found, but could not be used. Are you sure you correctly inserted
+the connection-string to Postgres?
+
+Best regards, Alex
+(Below is the inner exception)
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨", e);
+        }
+    }
 
     public static void TriggerRebuild()
     {
         using (var conn = DataSource.OpenConnection())
         {
-            conn.Execute(RebuildScript);
+            try
+            {
+                conn.Execute(RebuildScript);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($@"
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨
+THERE WAS AN ERROR REBUILDING THE DATABASE.
+
+Check the following: Are you running the postgres DB at Amazon Web Services in Stockholm?
+
+Best regards, Alex.
+(Below is the inner exception)
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨", e);
+            }
+
         }
     }
 

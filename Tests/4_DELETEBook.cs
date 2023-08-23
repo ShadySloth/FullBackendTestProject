@@ -34,9 +34,23 @@ public class DELETEBook
             conn.Execute(sql, book);
         }
 
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.DeleteAsync("http://localhost:5000/api/book/1");
+        }
 
-        var response = await _httpClient.DeleteAsync("http://localhost:5000/api/book/1");
-
+        catch (HttpRequestException e)
+        {
+            throw new Exception($@"
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨
+It looks like you failed to get a response from the API.
+Are you 100% sure the API is already running on localhost port 5000?
+Below is the inner exception.
+Best regards, Alex
+🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨
+", e);
+        }
 
         using (new AssertionScope())
         {
@@ -44,7 +58,7 @@ public class DELETEBook
             {
                 (conn.ExecuteScalar<int>("SELECT COUNT(*) FROM library.books WHERE bookId = 1;", book) == 0)
                     .Should()
-                    .BeTrue();
+                    .BeTrue("Expected to see that there are no books with ID 1, but there was");
             }
 
             response.IsSuccessStatusCode.Should().BeTrue();
