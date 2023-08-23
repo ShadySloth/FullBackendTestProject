@@ -58,11 +58,11 @@ Best regards, Alex
 ", e);
         }
 
-        object responseObject = null;
+        IEnumerable<Book> responseObject;
         try
         {
             responseObject = JsonConvert.DeserializeObject<IEnumerable<Book>>(
-                await response.Content.ReadAsStringAsync())!;
+                await response.Content.ReadAsStringAsync()) ?? throw new InvalidOperationException();
         }
         catch (Exception e)
         {

@@ -55,11 +55,12 @@ Best regards, Alex
 🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨
 ", e);
         }
-        object responseObject = null;
+
+        Book responseObject;
         try
         {
             responseObject = JsonConvert.DeserializeObject<Book>(
-                await response.Content.ReadAsStringAsync())!;
+                await response.Content.ReadAsStringAsync()) ?? throw new InvalidOperationException();
         }
         catch (Exception e)
         {
