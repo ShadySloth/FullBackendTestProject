@@ -25,21 +25,21 @@ public class BookController : ControllerBase
     [Route("/api/book")]
     public Book PostBook([FromBody]Book book)
     {
-        throw new NotImplementedException();
+        return _service.CreateBook(book.Title, book.Publisher, book.CoverImgUrl);
     }
 
     [HttpPut]
     [Route("/api/book/{bookId}")]
     public Book UpdateBook([FromBody] Book book, [FromRoute] int bookId)
     {
-        throw new NotImplementedException();
+        return _service.UpdateBook(bookId, book.Title, book.Publisher, book.CoverImgUrl);
     }
 
     [HttpDelete]
     [Route("/api/book/{bookId}")]
     public object DeleteBook([FromRoute] int bookId)
     {
-        throw new NotImplementedException();
+        return _service.DeleteBook(bookId);
     }
 
 

@@ -26,7 +26,37 @@ public class Service
 
     public Book CreateBook(string title, string publisher, string coverImgUrl)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return _repository.CreateBook(title, publisher, coverImgUrl);
+        }
+        catch (Exception)
+        {
+            throw new Exception("Could not create book");
+        }
     }
 
+    public Book UpdateBook(int bookId, string title, string publisher, string coverImgUrl)
+    {
+        try
+        {
+            return _repository.UpdateBook(bookId, title, publisher, coverImgUrl);
+        }
+        catch (Exception)
+        {
+            throw new Exception("Could not update book");
+        }
+    }
+
+    public object DeleteBook(int bookId)
+    {
+        try
+        {
+            return _repository.DeleteBook(bookId);
+        }
+        catch (Exception)
+        {
+            throw new Exception("Could not delete book");
+        }
+    }
 }
