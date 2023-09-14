@@ -33,7 +33,7 @@ jobs:
            8.0.x
 
      - name: Create new web api
-     - run: dotnet new webapi
+     - run: dotnet new web api
 
      - name: Run and kill the api
      - run: cd NewsAPITests/Api && dotnet run & (sleep 20 && kill -9 $(lsof -t -i:5000))
