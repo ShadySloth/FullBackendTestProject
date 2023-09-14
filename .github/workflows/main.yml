@@ -33,5 +33,5 @@ jobs:
      - name: Create new web api
        run: dotnet new webapi
 
-     - name: Run and killl web api
-       run: (cd api && dotnet run) & sleep 20 && kill -9 $(lsof -t -i:5000)
+     - name: Run and kill web api
+       run: (cd api && dotnet run) & (sleep 20 && kill -9 $(lsof -t -i:5000))
