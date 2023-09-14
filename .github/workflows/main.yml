@@ -32,8 +32,11 @@ jobs:
 
      - name: Create new web api
        run: dotnet new webapi
+       
+     - name: clone repository
+       run: git clone https://github.com/uldahlalex/NewsAPITests
 
      - name: Run and kill web api
-       run: (git clone https://github.com/uldahlalex/NewsAPITests && cd api && dotnet run) & (sleep 20 && kill -9 $(lsof -t -i:5000))
+       run: (cd api && dotnet run && dotnet test) & (sleep 20 && kill -9 $(lsof -t -i:5000))
        env:
          pgconn: ${{secrets.pgconn}}
