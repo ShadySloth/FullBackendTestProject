@@ -43,4 +43,4 @@ jobs:
            8.0.x
 
      - name: Create new web api
-     - run: dotnet new webapi
+     - run: dotnet new web api
