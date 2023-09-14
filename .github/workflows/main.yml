@@ -43,4 +43,4 @@ jobs:
            8.0.x
 
      - name: Run the app
-     - run: dotnet run & (sleep 20 && kill -9 $(lsof -t -i:5000))
+     - run: cd api && dotnet run & (sleep 20 && kill -9 $(lsof -t -i:5000))
